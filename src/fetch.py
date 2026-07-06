@@ -51,6 +51,7 @@ for date in dates:
         continue
 
     logging.info(f"fetching {fmtdate}")
+
     while True:
         try:
             grouped = client.get_grouped_daily_aggs(

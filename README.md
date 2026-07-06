@@ -13,3 +13,9 @@ uv run src/fetch.py
 ```bash
 uv run src/process.py
 ```
+
+[`query.py`](src/query.py): Query on the dataset.
+
+```bash
+uv run src/query.py
+```

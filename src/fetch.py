@@ -32,7 +32,8 @@ client = RESTClient(MASSIVE_API_KEY)
 CSV_PATH = Path(__file__).parents[1] / "data" / "data.csv"
 CSV_PATH.parent.mkdir(parents=True, exist_ok=True)
 
-dates = pd.bdate_range("2026-06-01", "2026-06-06")
+dates = pd.bdate_range("2026-04-01", "2026-07-02")
+excluded_dates = ["2026-04-03"]
 
 try:
     alldata = pd.read_csv(CSV_PATH)
@@ -42,6 +43,9 @@ except FileNotFoundError:
 
 for date in dates:
     fmtdate = date.strftime("%Y-%m-%d")
+
+    if fmtdate in excluded_dates:
+        continue
 
     if (
         "date" in alldata.columns
@@ -66,10 +70,13 @@ for date in dates:
             break
 
     df = pd.DataFrame(grouped)
+
+    if df.empty:
+        logging.warning(f"no data for {fmtdate}. Skipping")
+        continue
     df["date"] = pd.to_datetime(df["timestamp"], unit="ms")
 
     logging.info(f"fetched {len(df)} rows for {fmtdate}")
     alldata = pd.concat([alldata, df], ignore_index=True)
-
-alldata.drop_duplicates(subset=["ticker", "date"], inplace=True)
-alldata.to_csv(CSV_PATH, index=False)
+    alldata.drop_duplicates(subset=["ticker", "date"], inplace=True)
+    alldata.to_csv(CSV_PATH, index=False)

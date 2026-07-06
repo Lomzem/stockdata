@@ -8,6 +8,7 @@
 # ]
 # ///
 
+from pathlib import Path
 import time
 
 import numpy as np
@@ -26,13 +27,15 @@ logging.basicConfig(level=logging.INFO)
 
 _ = load_dotenv()
 MASSIVE_API_KEY = os.getenv("MASSIVE_API_KEY")
-
 client = RESTClient(MASSIVE_API_KEY)
+
+CSV_PATH = Path(__file__).parents[1] / "data" / "data.csv"
+CSV_PATH.parent.mkdir(parents=True, exist_ok=True)
 
 dates = pd.bdate_range("2026-06-01", "2026-06-06")
 
 try:
-    alldata = pd.read_csv("data.csv")
+    alldata = pd.read_csv(CSV_PATH)
     alldata["date"] = pd.to_datetime(alldata["date"])
 except FileNotFoundError:
     alldata = pd.DataFrame()
@@ -68,4 +71,4 @@ for date in dates:
     alldata = pd.concat([alldata, df], ignore_index=True)
 
 alldata.drop_duplicates(subset=["ticker", "date"], inplace=True)
-alldata.to_csv("data.csv", index=False)
+alldata.to_csv(CSV_PATH, index=False)

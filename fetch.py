@@ -67,4 +67,5 @@ for date in dates:
     logging.info(f"fetched {len(df)} rows for {fmtdate}")
     alldata = pd.concat([alldata, df], ignore_index=True)
 
+alldata.drop_duplicates(subset=["ticker", "date"], inplace=True)
 alldata.to_csv("data.csv", index=False)

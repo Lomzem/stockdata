@@ -21,5 +21,6 @@ df["plow"] = df.groupby("ticker")["low"].shift(1)
 df["pclose"] = df.groupby("ticker")["close"].shift(1)
 
 df["gap"] = df["open"] / df["pclose"] - 1
+df["opchange"] = df["high"] / df["open"] - 1
 
 df.to_csv(CSV_PATH, index=False)
